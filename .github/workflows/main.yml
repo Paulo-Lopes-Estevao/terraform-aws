@@ -37,24 +37,18 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: |
-          terraform init
-          working-directory: ./terraform
+        run: terraform init
 
       
       - name: Terraform Validate
         id: validate
-        run: |
-          terraform validate -no-color
-          working-directory: ./terraform
+        run: terraform validate -no-color
 
       - name: Terraform Plan
         id: plan
         if: github.event_name == 'pull_request'
-        run: |
-          terraform plan -no-color -input=false
-          continue-on-error: true
-          working-directory: ./terraform
+        run: terraform plan -no-color -input=false
+            continue-on-error: true
 
       - name: Update Pull Request
         uses: actions/github-script@v6
@@ -82,12 +76,8 @@ jobs:
             })
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
-        run: |
-          exit 1
-          working-directory: ./terraform
+        run: exit 1
 
       - name: Terraform Apply
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: |
-          terraform apply -auto-approve -input=false
-          working-directory: ./terraform
+        run: terraform apply -auto-approve -input=false
