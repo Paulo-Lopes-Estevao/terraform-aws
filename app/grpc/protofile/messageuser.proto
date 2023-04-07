@@ -1,0 +1,44 @@
+syntax = "proto3";
+
+package app.grpc.protofile;
+
+
+option go_package = ".;pb";
+
+message Message {
+    string from = 1;
+    string to = 2;
+    string content = 3;
+}
+
+message MessageRequest {
+    Message message = 1;
+}
+
+message MessageResponse {
+    string id = 1;
+    Message message = 2;
+}
+
+message UserRequest {
+    string name = 1;
+}
+
+message UserResponse{
+    string id = 1;
+    string name = 2;
+}
+
+message ListUser{}
+
+message GetUserById{
+    string from = 1;
+}
+  
+service MessageUserService {
+    rpc CreateUser(UserRequest) returns (UserResponse);
+    rpc Login (UserRequest) returns (UserResponse);
+    rpc SendMessage(MessageRequest) returns (stream MessageResponse);
+    rpc FindByMessageUser(GetUserById) returns (MessageResponse);
+    rpc listAllUsersOntheNetwork(ListUser) returns (stream UserResponse);
+}

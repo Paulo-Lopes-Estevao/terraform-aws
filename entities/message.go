@@ -1,21 +1,25 @@
 package entities
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type Message struct {
 	ID      string
-	From    string
+	FromID  string `json:"from_id"`
 	To      string
 	Content string
-	User    User
 }
 
 func NewMessage(from, to, content string) (*Message, error) {
 	message := &Message{
-		From:    from,
+		FromID:    from,
 		To:      to,
 		Content: content,
 	}
+	message.ID = uuid.New().String()
 	if err := message.isValid(); err != nil {
 		return nil, err
 	}
@@ -26,13 +30,13 @@ func (m *Message) isValid() error {
 	if m.Content == "" {
 		return errors.New("o conteúdo é obrigatório")
 	}
-	if m.From == m.To {
+	if m.FromID == m.To {
 		return errors.New("apenas permitido enviar menssagem para usuário diferente")
 	}
 	if m.To == "" {
 		return errors.New("o destinatário é obrigatório")
 	}
-	if m.From == "" {
+	if m.FromID == "" {
 		return errors.New("o identificador é obrigatório")
 	}
 	return nil

@@ -1,6 +1,10 @@
 package entities
 
-import "errors"
+import (
+	"errors"
+
+	"github.com/google/uuid"
+)
 
 type User struct {
 	ID   string
@@ -11,7 +15,7 @@ func NewUser(name string) (*User, error) {
 	user := &User{
 		Name: name,
 	}
-	user.ID = "1"
+	user.ID = uuid.New().String()
 	if err := user.isValid(); err != nil {
 		return nil, err
 	}
@@ -25,7 +29,7 @@ func (u *User) isValid() error {
 	return nil
 }
 
-func (u *User) CheckIfUserExists(name string) error{
+func (u *User) CheckIfUserExists(name string) error {
 	if u.Name == name {
 		return errors.New("nome do usuário já existe")
 	}

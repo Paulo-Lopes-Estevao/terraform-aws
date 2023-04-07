@@ -29,3 +29,9 @@ override.tf.json
 # example: *tfplan*
 
 *.lock.hcl
+
+coverage.out
+
+*.db
+
+.env
