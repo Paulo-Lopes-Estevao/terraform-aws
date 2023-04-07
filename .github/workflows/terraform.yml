@@ -3,12 +3,12 @@ name: "Terraform"
 on:
  push:
    branches:
-   - ec2
+   - main
    paths:
    - terraform/**
  pull_request:
    branches:
-   - ec2
+   - main
    paths:
    - terraform/**
 
