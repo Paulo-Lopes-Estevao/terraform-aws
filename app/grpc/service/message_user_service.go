@@ -2,9 +2,12 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/grpc/pb"
 	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/usecase"
+	"go.opentelemetry.io/otel/trace"
+	"github.com/uptrace/opentelemetry-go-extra/otelplay"
 )
 
 type MessageUser struct {
@@ -66,6 +69,7 @@ func (m *MessageUser) SendMessage(request *pb.MessageRequest, stream pb.MessageU
 }
 
 func (m *MessageUser) FindByMessageUser(ctx context.Context, request *pb.GetUserById) (*pb.MessageResponse, error) {
+	fmt.Println("trace", otelplay.TraceURL(trace.SpanFromContext(ctx)))
 	messages, err := m.IMessageUsecase.GetUserBydId(request.GetFrom())
 	if err != nil {
 		return nil, err

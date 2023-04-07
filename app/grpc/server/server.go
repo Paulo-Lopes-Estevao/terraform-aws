@@ -8,6 +8,7 @@ import (
 	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/grpc/dependency"
 	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/grpc/pb"
 	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/infra/db/drive/sqlite"
+	"go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -30,7 +31,10 @@ func ServerGrpc() {
 
 	serviceDependency := dependency.Dependency(db)
 
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(
+		grpc.UnaryInterceptor(otelgrpc.UnaryServerInterceptor()),
+		grpc.StreamInterceptor(otelgrpc.StreamServerInterceptor()),
+	)
 	pb.RegisterMessageUserServiceServer(grpcServer, serviceDependency)
 	reflection.Register(grpcServer)
 
