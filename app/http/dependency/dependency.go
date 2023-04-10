@@ -1,21 +1,25 @@
 package dependency
 
 import (
-	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/grpc/service"
+	"net/http"
+
+	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/http/controller"
+	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/http/router"
 	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/usecase"
 	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/infra/repository"
-	"github.com/Paulo-Lopes-Estevao/ci-cd_terraform_aws-ec2/app/grpc/pb"
 	"github.com/jinzhu/gorm"
 )
 
-func Dependency(db *gorm.DB) pb.MessageUserServiceServer {
+func Dependency(db *gorm.DB, serverMux *http.ServeMux) *http.ServeMux {
 	UserRepository := repository.NewUserRepository(db)
 	UserUsecase := usecase.NewUserUseCase(UserRepository)
 
 	MessageRepository := repository.NewMessageRepository(db)
 	MessageUsecase := usecase.NewMessageUseCase(MessageRepository)
 
-	Service := service.NewMessageUserService(MessageUsecase, UserUsecase)
+	messageUserController := controller.NewMessageUserController(MessageUsecase, UserUsecase)
 
-	return Service
+	r := router.NewRouter(messageUserController, serverMux)
+
+	return r.Router()
 }
